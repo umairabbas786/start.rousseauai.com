@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RousseauAI – Product Picker (HTML + CSS only)</title>
+    <style>
+      /* ====== Design Tokens (Color System) ====== */
+             :root {
+         --indigo-midnight: #ffffff; /* White text for dark theme */
+         --cool-white: #0C0F2F; /* Dark blue background */
+         --indigo-pulse: #5a00e0; /* Energy, innovation, primary CTA */
+         --signal-green: #00ffa3; /* Progress, accents, confirmations */
+         --graphite-gray: #ffffff; /* White text for dark theme */
+         --silver-mist: #333333; /* Darker borders for dark theme */
+
+        --radius-xl: 20px;
+        --radius-lg: 16px;
+        --radius-md: 12px;
+        --shadow-md: 0 10px 24px rgba(11, 15, 47, 0.15);
+        --shadow-sm: 0 6px 16px rgba(11, 15, 47, 0.1);
+        --container: 1100px;
+      }
+
+      /* ====== Base ====== */
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+          Inter, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        color: var(--graphite-gray);
+        background: var(--cool-white);
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .wrap {
+        max-width: var(--container);
+        margin: 0 auto;
+        padding: 48px 20px;
+      }
+
+      .section-title {
+        font-weight: 700;
+        letter-spacing: 0.2px;
+        margin: 0 0 18px 0;
+        color: var(--indigo-midnight);
+        font-size: clamp(24px, 4vw, 36px);
+      }
+
+             .subtle {
+         color: #cccccc;
+         font-size: 15px;
+       }
+
+             /* ====== Card & Surfaces ====== */
+       .surface {
+         background: #1A1F3F;
+         border: 1px solid var(--silver-mist);
+         border-radius: var(--radius-xl);
+         box-shadow: var(--shadow-md);
+       }
+
+      .panel {
+        padding: clamp(16px, 3.2vw, 28px);
+      }
+
+      .divider {
+        height: 1px;
+        background: var(--silver-mist);
+        margin: 12px 0 24px;
+      }
+
+      /* ====== Buttons ====== */
+      .actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .btn {
+        appearance: none;
+        border: 0;
+        cursor: pointer;
+        user-select: none;
+        font-weight: 700;
+        border-radius: 999px;
+        padding: 12px 18px;
+        transition: transform 0.02s ease, box-shadow 0.2s ease,
+          background 0.2s ease, color 0.2s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 15px;
+      }
+      .btn:active {
+        transform: translateY(1px);
+      }
+      .btn.primary {
+        background: var(--indigo-pulse);
+        color: white;
+        box-shadow: 0 8px 18px rgba(90, 0, 224, 0.35);
+      }
+      .btn.primary:hover,
+      .btn.primary:focus {
+        outline: none;
+        box-shadow: 0 10px 22px rgba(0, 255, 163, 0.3);
+      }
+      .btn.primary:hover {
+        background: #6614ff;
+      }
+
+      .btn.ghost {
+        background: transparent;
+        color: var(--indigo-pulse);
+        border: 1px solid var(--indigo-pulse);
+      }
+      .btn.ghost:hover {
+        color: var(--indigo-midnight);
+        border-color: var(--signal-green);
+        box-shadow: 0 8px 18px rgba(0, 255, 163, 0.25);
+      }
+
+      .tiny {
+        font-size: 12px;
+        opacity: 0.8;
+      }
+
+      /* ====== Stepper (CSS-only) ====== */
+      /* Radio controllers (hidden) */
+      .controller {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      /* Layout */
+      .picker {
+        display: grid;
+        gap: 18px;
+      }
+
+             .progressbar {
+         background: linear-gradient(180deg, #1A1F3F, #0C0F2F);
+         border: 1px solid var(--silver-mist);
+         border-radius: var(--radius-lg);
+         padding: 14px 16px;
+         display: grid;
+         gap: 8px;
+       }
+
+      .progress-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .progress-label {
+        font-weight: 700;
+        color: var(--indigo-midnight);
+        letter-spacing: 0.3px;
+      }
+
+             .bar {
+         position: relative;
+         height: 8px;
+         background: #333333;
+         border-radius: 8px;
+         overflow: hidden;
+       }
+      .bar > i {
+        display: block;
+        height: 100%;
+        width: 0%;
+        background: var(--signal-green);
+        transition: width 0.35s ease;
+      }
+
+      /* Progress text states */
+      .p-state {
+        display: none;
+      }
+      #step1:checked ~ .picker .p-step1,
+      #step2:checked ~ .picker .p-step2,
+      #step3:checked ~ .picker .p-step3,
+      #result:checked ~ .picker .p-result {
+        display: inline;
+      }
+
+      /* Progress widths */
+      #step1:checked ~ .picker .bar > i {
+        width: 33.333%;
+      }
+      #step2:checked ~ .picker .bar > i {
+        width: 66.666%;
+      }
+      #step3:checked ~ .picker .bar > i {
+        width: 100%;
+      }
+      #result:checked ~ .picker .bar > i {
+        width: 100%;
+      }
+
+      /* Panels visibility */
+      .step {
+        display: none;
+      }
+      #step1:checked ~ .picker .step-1,
+      #step2:checked ~ .picker .step-2,
+      #step3:checked ~ .picker .step-3,
+      #result:checked ~ .picker .step-result {
+        display: block;
+      }
+
+      /* ====== Form Controls (Segmented options) ====== */
+      .q {
+        display: grid;
+        gap: 14px;
+      }
+      .q legend {
+        font-weight: 800;
+        color: var(--indigo-midnight);
+        font-size: 18px;
+        margin-bottom: 6px;
+      }
+      .question-label {
+        font-weight: 800;
+        color: var(--indigo-midnight);
+        font-size: 18px;
+        margin-bottom: 6px;
+        display: block;
+      }
+      .options {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .chip {
+        position: relative;
+      }
+      .chip input {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+      }
+             .chip label {
+         display: block;
+         padding: 14px 14px;
+         border-radius: var(--radius-md);
+         border: 1px solid var(--silver-mist);
+         background: #2A2F4F;
+         font-weight: 600;
+         cursor: pointer;
+         text-align: center;
+         transition: border 0.2s ease, box-shadow 0.2s ease, background 0.2s ease,
+           color 0.2s ease;
+       }
+      .chip label:hover {
+        border-color: var(--indigo-pulse);
+      }
+             .chip input:checked + label {
+         border-color: var(--indigo-pulse);
+         background: var(--indigo-pulse);
+         box-shadow: 0 6px 14px rgba(90, 0, 224, 0.3);
+         color: white;
+       }
+
+      /* More Options (details/summary) */
+             details.more {
+         border: 1px dashed var(--silver-mist);
+         border-radius: var(--radius-md);
+         background: #2A2F4F;
+         margin-top: 15px;
+       }
+      details.more summary {
+        list-style: none;
+        cursor: pointer;
+        padding: 12px 14px;
+        font-weight: 700;
+        color: var(--indigo-pulse);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        user-select: none;
+      }
+      details.more summary::-webkit-details-marker {
+        display: none;
+      }
+      details.more[open] summary {
+        color: var(--indigo-midnight);
+      }
+      details.more .mo-wrap {
+        padding: 0 14px 14px;
+        display: grid;
+        gap: 12px;
+      }
+      .row-3 {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      /* ====== Result Layout ====== */
+      .result-head {
+        display: grid;
+        gap: 6px;
+      }
+      .result-head h3 {
+        margin: 0;
+        color: var(--indigo-midnight);
+        font-size: clamp(22px, 3.6vw, 28px);
+      }
+      .result-head p {
+        margin: 0;
+      }
+
+      .result-grid {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 16px;
+        align-items: stretch;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-weight: 800;
+        font-size: 12px;
+        letter-spacing: 0.3px;
+        background: var(--indigo-midnight);
+        color: #fff;
+      }
+      .badge i {
+        width: 8px;
+        height: 8px;
+        background: var(--signal-green);
+        border-radius: 50%;
+        box-shadow: 0 0 0 3px rgba(0, 255, 163, 0.25);
+      }
+
+             .card {
+         background: #2A2F4F;
+         border: 1px solid var(--silver-mist);
+         border-radius: var(--radius-xl);
+         box-shadow: var(--shadow-sm);
+         padding: clamp(16px, 3.2vw, 24px);
+         display: grid;
+         gap: 12px;
+       }
+
+      .card h4 {
+        margin: 2px 0 0 0;
+        font-size: 20px;
+        color: var(--indigo-midnight);
+      }
+             .meta {
+         display: flex;
+         gap: 12px;
+         flex-wrap: wrap;
+         font-size: 13px;
+         color: #cccccc;
+       }
+      .meta span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .meta em {
+        font-style: normal;
+        font-weight: 800;
+        color: var(--indigo-midnight);
+      }
+
+      .bullets {
+        margin: 2px 0 6px 0;
+        padding-left: 18px;
+      }
+      .bullets li {
+        margin: 4px 0;
+      }
+
+      .alt-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+             .alt-tile {
+         border-radius: var(--radius-lg);
+         border: 1px solid var(--silver-mist);
+         padding: 14px;
+         background: linear-gradient(180deg, #2A2F4F, #1A1F3F);
+         display: grid;
+         gap: 10px;
+       }
+      .alt-tile h5 {
+        margin: 0;
+        font-size: 15px;
+        color: var(--indigo-midnight);
+      }
+      .alt-tile p {
+        margin: 0;
+        font-size: 14px;
+      }
+
+             .note {
+         font-size: 13px;
+         color: #cccccc;
+       }
+      .note strong {
+        color: var(--indigo-midnight);
+      }
+
+      /* ====== Utility ====== */
+      .stack {
+        display: grid;
+        gap: 12px;
+      }
+      .space {
+        height: 10px;
+      }
+             .footer-note {
+         font-size: 13px;
+         color: #cccccc;
+       }
+
+      /* ====== Responsive ====== */
+      @media (max-width: 900px) {
+        .result-grid {
+          grid-template-columns: 1fr;
+        }
+        .options {
+          grid-template-columns: 1fr;
+        }
+        .row-3 {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* ====== Header/Footer usage sample (optional look) ====== */
+      .usage-sample {
+        border-radius: var(--radius-xl);
+        overflow: hidden;
+        border: 1px solid var(--silver-mist);
+      }
+      .usage-sample .hdr,
+      .usage-sample .ftr {
+        background: #000;
+        color: var(--cool-white);
+        padding: 12px 16px;
+      }
+      .usage-sample .body {
+        background: linear-gradient(180deg, #fff, #f6f6f6);
+        padding: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- This section goes directly under your hero banner -->
+    <div class="wrap">
+      <h2 class="section-title">Find your perfect next step</h2>
+      <p class="subtle">
+        Answer three quick questions to get a tailored recommendation. We only
+        use your answers to personalize your recommendation.
+      </p>
+
+      <!-- State controllers (CSS-only) -->
+      <input class="controller" type="radio" name="state" id="step1" checked />
+      <input class="controller" type="radio" name="state" id="step2" />
+      <input class="controller" type="radio" name="state" id="step3" />
+      <input class="controller" type="radio" name="state" id="result" />
+
+      <section class="picker">
+        <!-- Progress -->
+        <div class="progressbar surface panel">
+          <div class="progress-top">
+            <div class="progress-label">
+              <span class="p-state p-step1">Step 1 of 3</span>
+              <span class="p-state p-step2">Step 2 of 3</span>
+              <span class="p-state p-step3">Step 3 of 3</span>
+              <span class="p-state p-result">Recommendation</span>
+            </div>
+          </div>
+          <div
+            class="bar"
+            role="progressbar"
+            aria-valuemin="0"
+            aria-valuemax="100"
+          >
+            <i></i>
+          </div>
+        </div>
+
+        <!-- STEP 1 -->
+        <div class="surface panel step step-1" aria-labelledby="q1">
+          <div class="q">
+            <label id="q1" class="question-label"
+              >Q1 — Goal: What's your goal right now?</label
+            >
+            <div class="options">
+              <div class="chip">
+                <input type="radio" id="goal-ship" name="goal" /><label
+                  for="goal-ship"
+                  >Ship a system</label
+                >
+              </div>
+              <div class="chip">
+                <input type="radio" id="goal-validate" name="goal" /><label
+                  for="goal-validate"
+                  >Validate an offer</label
+                >
+              </div>
+              <div class="chip">
+                <input type="radio" id="goal-ops" name="goal" /><label
+                  for="goal-ops"
+                  >Improve operations</label
+                >
+              </div>
+              <div class="chip">
+                <input type="radio" id="goal-content" name="goal" /><label
+                  for="goal-content"
+                  >Build a content engine</label
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+          <div class="actions">
+            <label for="step2" class="btn primary">Continue</label>
+            <label for="result" class="btn ghost">Skip & Recommend</label>
+            <span class="tiny"
+              >We only use your answers to personalize your
+              recommendation.</span
+            >
+          </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="surface panel step step-2" aria-labelledby="q2">
+          <div class="q">
+            <label id="q2" class="question-label"
+              >Q2 — Time: How fast do you want results?</label
+            >
+            <div class="options">
+              <div class="chip">
+                <input type="radio" id="time-today" name="time" /><label
+                  for="time-today"
+                  >Today</label
+                >
+              </div>
+              <div class="chip">
+                <input type="radio" id="time-7" name="time" /><label
+                  for="time-7"
+                  >7 days</label
+                >
+              </div>
+              <div class="chip">
+                <input type="radio" id="time-30" name="time" /><label
+                  for="time-30"
+                  >30 days</label
+                >
+              </div>
+              <div class="chip"><span></span></div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+          <div class="actions">
+            <label for="step1" class="btn ghost">Back</label>
+            <label for="step3" class="btn primary">Continue</label>
+            <label for="result" class="btn ghost">Skip & Recommend</label>
+          </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="surface panel step step-3" aria-labelledby="q3">
+          <div class="q">
+            <label id="q3" class="question-label"
+              >Q3 — Budget: What's your budget?</label
+            >
+            <div class="options">
+              <div class="chip">
+                <input type="radio" id="budget-97" name="budget" /><label
+                  for="budget-97"
+                  >$97</label
+                >
+              </div>
+              <div class="chip">
+                <input type="radio" id="budget-mid" name="budget" /><label
+                  for="budget-mid"
+                  >$497–$2,997</label
+                >
+              </div>
+              <div class="chip">
+                <input type="radio" id="budget-custom" name="budget" /><label
+                  for="budget-custom"
+                  >Custom (talk to us)</label
+                >
+              </div>
+              <div class="chip"><span></span></div>
+            </div>
+          </div>
+
+          <details class="more" name="more-opts">
+            <summary>More options</summary>
+            <div class="mo-wrap">
+              <div class="q">
+                <label class="question-label">Role</label>
+                <div class="options">
+                  <div class="chip">
+                    <input type="radio" id="role-solo" name="role" /><label
+                      for="role-solo"
+                      >Solo</label
+                    >
+                  </div>
+                  <div class="chip">
+                    <input type="radio" id="role-agency" name="role" /><label
+                      for="role-agency"
+                      >Agency</label
+                    >
+                  </div>
+                  <div class="chip">
+                    <input type="radio" id="role-lead" name="role" /><label
+                      for="role-lead"
+                      >Team lead</label
+                    >
+                  </div>
+                  <div class="chip">
+                    <input
+                      type="radio"
+                      id="role-enterprise"
+                      name="role"
+                    /><label for="role-enterprise">Enterprise</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="q">
+                <label class="question-label">Experience</label>
+                <div class="options">
+                  <div class="chip">
+                    <input type="radio" id="xp-new" name="xp" /><label
+                      for="xp-new"
+                      >New</label
+                    >
+                  </div>
+                  <div class="chip">
+                    <input type="radio" id="xp-int" name="xp" /><label
+                      for="xp-int"
+                      >Intermediate</label
+                    >
+                  </div>
+                  <div class="chip">
+                    <input type="radio" id="xp-adv" name="xp" /><label
+                      for="xp-adv"
+                      >Advanced</label
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div class="q">
+                <label class="question-label">Tooling</label>
+                <div class="options">
+                  <div class="chip">
+                    <input type="radio" id="tool-ghl" name="tool" /><label
+                      for="tool-ghl"
+                      >GHL</label
+                    >
+                  </div>
+                  <div class="chip">
+                    <input type="radio" id="tool-notion" name="tool" /><label
+                      for="tool-notion"
+                      >Notion</label
+                    >
+                  </div>
+                  <div class="chip">
+                    <input type="radio" id="tool-hubspot" name="tool" /><label
+                      for="tool-hubspot"
+                      >HubSpot</label
+                    >
+                  </div>
+                  <div class="chip">
+                    <input type="radio" id="tool-other" name="tool" /><label
+                      for="tool-other"
+                      >Other</label
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <div class="divider"></div>
+          <div class="actions">
+            <label for="step2" class="btn ghost">Back</label>
+            <label for="result" class="btn primary">Continue</label>
+          </div>
+        </div>
+
+        <!-- RESULT (static template example for HTML/CSS) -->
+        <div class="surface panel step step-result" aria-labelledby="res-title">
+          <div class="result-head">
+            <h3 id="res-title">Here’s your fastest path by Friday.</h3>
+            <p class="subtle">
+              Based on your answers, this gets you to outcomes the quickest.
+            </p>
+          </div>
+          <div class="space"></div>
+
+          <div class="result-grid">
+            <!-- Recommended Card -->
+            <article class="card">
+              <span class="badge"><i></i> Recommended</span>
+              <h4>Toolkit: AI Content Toolkit</h4>
+              <ul class="bullets">
+                <li>
+                  What you’ll ship by Friday: 6 ready‑to‑publish content assets.
+                </li>
+                <li>
+                  1 click workflows for briefs, outlines, posts, and emails.
+                </li>
+                <li>Frameworks for sourcing ideas and validating angles.</li>
+                <li>Plug‑and‑play Notion & GHL templates.</li>
+              </ul>
+              <div class="meta">
+                <span
+                  ><em>Time & effort:</em> ~6–8 hours • Templates included</span
+                >
+                <span
+                  ><em>Price:</em> $497
+                  <span class="tiny">(challenge credit applies)</span></span
+                >
+              </div>
+              <div class="actions">
+                <a href="#" class="btn primary">Get the Toolkit</a>
+                <a href="#" class="btn ghost">See what’s inside</a>
+              </div>
+              <p class="footer-note">
+                Did the picker get it wrong? See alternatives below.
+              </p>
+            </article>
+
+            <!-- Alternates -->
+            <div class="stack">
+              <div class="alt-grid">
+                <div class="alt-tile">
+                  <h5>Alternate A — 7‑Day Growth Challenge</h5>
+                  <p>
+                    Great if you want daily accountability and a fixed 7‑day
+                    sprint.
+                  </p>
+                  <div class="actions">
+                    <a href="#" class="btn ghost">View</a>
+                  </div>
+                </div>
+                <div class="alt-tile">
+                  <h5>Alternate B — Book: Launch Your AI OS by Friday</h5>
+                  <p>
+                    Best if you prefer a self‑paced, read‑then‑implement
+                    approach.
+                  </p>
+                  <div class="actions">
+                    <a href="#" class="btn ghost">View</a>
+                  </div>
+                </div>
+              </div>
+              <p class="note">
+                <strong>Credit note:</strong> If you choose the Challenge, your
+                $97 applies automatically toward any Toolkit.
+              </p>
+              <div class="actions">
+                <label for="step1" class="btn ghost">Restart</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>
