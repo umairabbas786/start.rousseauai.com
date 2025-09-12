@@ -1,0 +1,473 @@
+{
+  "spec_version": "1.0",
+  "updated_at": "2025-09-10T12:00:00Z",
+  "products": [
+    {
+      "sku": "BOOK-MANIFESTO",
+      "type": "book",
+      "name": "Ship the System: Operating Systems for the AI Age",
+      "category": "Flagship",
+      "price": "19–39",
+      "url": "",
+      "bullets": [
+        "Narrative manifesto: Random acts of AI don’t scale — install RAI-OS to make wins predictable",
+        "8 canonical RAI-OS models + 30-day plan; camera-ready diagrams",
+        "Exec-friendly narrative with operating checklists"
+      ],
+      "hub_category": "Flagship / Cross-hub",
+      "guarantee": "Store standard"
+    },
+
+    {
+      "sku": "TK-AG-01",
+      "type": "toolkit",
+      "name": "Agency Enablement Toolkit",
+      "category": "Agency & Service Providers",
+      "price": "2997",
+      "url": "",
+      "bullets": [
+        "Productize services and scale delivery",
+        "Service menu & pricing; discovery/proposal templates",
+        "Delivery SOPs & QA; case study system"
+      ],
+      "hub_category": "Consultants & Agencies",
+      "guarantee": "30-Day Money-Back Guarantee"
+    },
+    {
+      "sku": "TK-CC-01",
+      "type": "toolkit",
+      "name": "AI Career Accelerator Toolkit",
+      "category": "Creators & Careers",
+      "price": "497",
+      "url": "",
+      "bullets": [
+        "Target roles and build proof fast",
+        "Role/skills map; portfolio projects; job search CRM",
+        "Outreach cadences; interview & salary scripts"
+      ],
+      "hub_category": "Professionals & Creators",
+      "guarantee": "30-Day Money-Back Guarantee"
+    },
+    {
+      "sku": "TK-CC-02",
+      "type": "toolkit",
+      "name": "AI Creator Toolkit",
+      "category": "Creators & Careers",
+      "price": "497",
+      "url": "",
+      "bullets": [
+        "Publish more with a system",
+        "Pillars; script/caption generators; repurpose map",
+        "Calendar and analytics snapshot"
+      ],
+      "hub_category": "Professionals & Creators",
+      "guarantee": "30-Day Money-Back Guarantee"
+    },
+    {
+      "sku": "TK-GR-01",
+      "type": "toolkit",
+      "name": "AI Business Growth Toolkit",
+      "category": "Growth & Revenue",
+      "price": "997",
+      "url": "",
+      "bullets": [
+        "Offers, funnels, nurture, scoreboard",
+        "Clarify ICP/offer; map one unified funnel",
+        "Install weekly cadence + KPIs that compound"
+      ],
+      "hub_category": "Entrepreneurs & Founders",
+      "guarantee": "30-Day Money-Back Guarantee"
+    },
+    {
+      "sku": "TK-GR-02",
+      "type": "toolkit",
+      "name": "AI Sales & CRM Toolkit",
+      "category": "Growth & Revenue",
+      "price": "997",
+      "url": "",
+      "bullets": [
+        "Clean pipeline and close faster",
+        "Sequences; objection bank; next-best-action board",
+        "Lightweight forecast to raise win rate"
+      ],
+      "hub_category": "Entrepreneurs & Founders",
+      "guarantee": "30-Day Money-Back Guarantee"
+    },
+    {
+      "sku": "TK-GR-03",
+      "type": "toolkit",
+      "name": "AI Marketing & Content Engine Toolkit",
+      "category": "Growth & Revenue",
+      "price": "997",
+      "url": "",
+      "bullets": [
+        "Plan once, publish everywhere",
+        "Angle bank; briefs; 1→10 repurpose flows",
+        "Distribution checklist; analytics snapshot"
+      ],
+      "hub_category": "Entrepreneurs & Founders",
+      "guarantee": "30-Day Money-Back Guarantee"
+    },
+    {
+      "sku": "TK-GR-04",
+      "type": "toolkit",
+      "name": "AI Advertising & Paid Media Toolkit",
+      "category": "Growth & Revenue",
+      "price": "997",
+      "url": "",
+      "bullets": [
+        "Launch smart ads with clear tests",
+        "Pixel/account QA; creative generators; testing matrix",
+        "Budget rules; ROAS/CAC dashboard"
+      ],
+      "hub_category": "Entrepreneurs & Founders",
+      "guarantee": "30-Day Money-Back Guarantee"
+    },
+    {
+      "sku": "TK-LS-01",
+      "type": "toolkit",
+      "name": "Executive AI Strategy Toolkit",
+      "category": "Leadership & Strategy",
+      "price": "1997",
+      "url": "",
+      "bullets": [
+        "Align leaders on AI with a plan",
+        "North star; portfolio of bets; governance checklist",
+        "KPI/value tracker; 90-day cadence"
+      ],
+      "hub_category": "Department & Strategy Leaders",
+      "guarantee": "30-Day Money-Back Guarantee"
+    },
+    {
+      "sku": "TK-LS-02",
+      "type": "toolkit",
+      "name": "AI Data & Analytics Toolkit",
+      "category": "Leadership & Strategy",
+      "price": "1997",
+      "url": "",
+      "bullets": [
+        "One KPI map and shared scorecard",
+        "Metric dictionary; tracking plan with QA",
+        "Dashboard/scorecard; governance starter"
+      ],
+      "hub_category": "Department & Strategy Leaders",
+      "guarantee": "30-Day Money-Back Guarantee"
+    },
+    {
+      "sku": "TK-LS-03",
+      "type": "toolkit",
+      "name": "Certified AI Strategist Program",
+      "category": "Leadership & Strategy",
+      "price": "2997",
+      "url": "",
+      "bullets": [
+        "Package proof and win strategic work",
+        "Practical certification track with pitch assets",
+        "Client delivery playbooks and case templates"
+      ],
+      "hub_category": "Department & Strategy Leaders",
+      "guarantee": "30-Day Money-Back Guarantee"
+    },
+    {
+      "sku": "TK-LS-04",
+      "type": "toolkit",
+      "name": "Corporate AI Rollout Toolkit",
+      "category": "Leadership & Strategy",
+      "price": "Custom (from 5000)",
+      "url": "",
+      "bullets": [
+        "Governed, secure, scalable rollout",
+        "Operating model & RACI; policy/risk controls",
+        "Enablement by persona; vendor review; value tracking"
+      ],
+      "hub_category": "Enterprise & Corporate",
+      "guarantee": "Custom engagement per MSA; toolkit components 30-Day Guarantee"
+    },
+    {
+      "sku": "TK-OH-01",
+      "type": "toolkit",
+      "name": "Operations & HR Automation Toolkit",
+      "category": "Operations & HR",
+      "price": "1997",
+      "url": "",
+      "bullets": [
+        "Standardize intake and automate flows",
+        "Centralized intake/routing; 1–2 live workflows",
+        "SLA/utilization tracker; knowledge base starters"
+      ],
+      "hub_category": "Department & Strategy Leaders",
+      "guarantee": "30-Day Money-Back Guarantee"
+    },
+    {
+      "sku": "TK-OH-02",
+      "type": "toolkit",
+      "name": "AI Customer Support & Contact Center Toolkit",
+      "category": "Operations & HR",
+      "price": "997",
+      "url": "",
+      "bullets": [
+        "Resolve faster with steady CX ops",
+        "Triage rules; macro library; agent-assist prompts",
+        "QA rubric; CSAT/AHT dashboard"
+      ],
+      "hub_category": "Department & Strategy Leaders",
+      "guarantee": "30-Day Money-Back Guarantee"
+    },
+    {
+      "sku": "TK-PI-01",
+      "type": "toolkit",
+      "name": "No-Code AI Business Stack Toolkit",
+      "category": "Product & Innovation",
+      "price": "997",
+      "url": "",
+      "bullets": [
+        "Ship a working workflow/app fast",
+        "Choose a stack; build v1 workflow/app; test",
+        "Secure and hand off with docs"
+      ],
+      "hub_category": "Launch & GTM Leaders",
+      "guarantee": "30-Day Money-Back Guarantee"
+    },
+    {
+      "sku": "TK-PI-02",
+      "type": "toolkit",
+      "name": "AI Product Launch Toolkit",
+      "category": "Product & Innovation",
+      "price": "1497",
+      "url": "",
+      "bullets": [
+        "Positioning, assets, partners, KPIs",
+        "Validate angles; lock positioning; asset pack",
+        "Activate partners; run 30-day KPI plan"
+      ],
+      "hub_category": "Launch & GTM Leaders",
+      "guarantee": "30-Day Money-Back Guarantee"
+    },
+
+    {
+      "sku": "CH-AG-01",
+      "type": "challenge",
+      "name": "7-Day Agency Enablement Challenge",
+      "category": "Agency & Service Providers",
+      "price": "97",
+      "url": "",
+      "bullets": [
+        "Package offers and standardize delivery",
+        "Service menu with tiered pricing; discovery/proposal",
+        "Delivery SOPs/QA; case outline"
+      ],
+      "hub_category": "Consultants & Agencies",
+      "guarantee": "No refunds; $97 credit policy"
+    },
+    {
+      "sku": "CH-CC-01",
+      "type": "challenge",
+      "name": "7-Day AI Career Accelerator Challenge",
+      "category": "Creators & Careers",
+      "price": "97",
+      "url": "",
+      "bullets": [
+        "Target roles; build portfolio proof",
+        "Map role + gaps; ship a portfolio project",
+        "Job-search CRM; outreach/interview scripts"
+      ],
+      "hub_category": "Professionals & Creators",
+      "guarantee": "No refunds; $97 credit policy"
+    },
+    {
+      "sku": "CH-CC-02",
+      "type": "challenge",
+      "name": "7-Day AI Creator Challenge",
+      "category": "Creators & Careers",
+      "price": "97",
+      "url": "",
+      "bullets": [
+        "Publish your best week of content",
+        "Lock pillars; generate scripts; batch produce",
+        "Schedule and measure"
+      ],
+      "hub_category": "Professionals & Creators",
+      "guarantee": "No refunds; $97 credit policy"
+    },
+    {
+      "sku": "CH-GR-01",
+      "type": "challenge",
+      "name": "7-Day AI Business Growth Challenge",
+      "category": "Growth & Revenue",
+      "price": "97",
+      "url": "",
+      "bullets": [
+        "Build a clear growth plan fast",
+        "Craft ICP/offer; map one funnel",
+        "Install a weekly scoreboard in 7 days"
+      ],
+      "hub_category": "Entrepreneurs & Founders",
+      "guarantee": "No refunds; $97 credit policy"
+    },
+    {
+      "sku": "CH-GR-02",
+      "type": "challenge",
+      "name": "7-Day AI Sales & CRM Challenge",
+      "category": "Growth & Revenue",
+      "price": "97",
+      "url": "",
+      "bullets": [
+        "Fix follow-up and close faster",
+        "Clean pipeline; generate AI sequences",
+        "Next-best-action rhythm; simple forecast"
+      ],
+      "hub_category": "Entrepreneurs & Founders",
+      "guarantee": "No refunds; $97 credit policy"
+    },
+    {
+      "sku": "CH-GR-03",
+      "type": "challenge",
+      "name": "7-Day AI Marketing & Content Engine Challenge",
+      "category": "Growth & Revenue",
+      "price": "97",
+      "url": "",
+      "bullets": [
+        "Plan once, publish everywhere",
+        "Angle bank; editorial calendar; 1→10 repurpose",
+        "Distribution checklist; analytics snapshot"
+      ],
+      "hub_category": "Entrepreneurs & Founders",
+      "guarantee": "No refunds; $97 credit policy"
+    },
+    {
+      "sku": "CH-GR-04",
+      "type": "challenge",
+      "name": "7-Day AI Advertising & Paid Media Challenge",
+      "category": "Growth & Revenue",
+      "price": "97",
+      "url": "",
+      "bullets": [
+        "Launch smart ads with a plan",
+        "Pixel/account QA; creative grid; testing matrix",
+        "Budget rules; ROAS/CAC snapshot"
+      ],
+      "hub_category": "Entrepreneurs & Founders",
+      "guarantee": "No refunds; $97 credit policy"
+    },
+    {
+      "sku": "CH-LS-01",
+      "type": "challenge",
+      "name": "7-Day Executive AI Strategy Challenge",
+      "category": "Leadership & Strategy",
+      "price": "97",
+      "url": "",
+      "bullets": [
+        "Align leaders on a clear plan",
+        "Define a north star; select a portfolio of bets",
+        "Set governance & cadence for 90 days"
+      ],
+      "hub_category": "Department & Strategy Leaders",
+      "guarantee": "No refunds; $97 credit policy"
+    },
+    {
+      "sku": "CH-LS-02",
+      "type": "challenge",
+      "name": "7-Day AI Data & Analytics Challenge",
+      "category": "Leadership & Strategy",
+      "price": "97",
+      "url": "",
+      "bullets": [
+        "Get on the same numbers",
+        "Create a KPI map; tracking plan with owners",
+        "Weekly scorecard/dashboard the team trusts"
+      ],
+      "hub_category": "Department & Strategy Leaders",
+      "guarantee": "No refunds; $97 credit policy"
+    },
+    {
+      "sku": "CH-LS-03",
+      "type": "challenge",
+      "name": "7-Day Certified AI Strategist Challenge",
+      "category": "Leadership & Strategy",
+      "price": "97",
+      "url": "",
+      "bullets": [
+        "Build proof and a winning pitch",
+        "Produce a client-ready case; pass assessment",
+        "Assemble a pitch pack to win work"
+      ],
+      "hub_category": "Department & Strategy Leaders",
+      "guarantee": "No refunds; $97 credit policy"
+    },
+    {
+      "sku": "CH-LS-04",
+      "type": "challenge",
+      "name": "7-Day Corporate AI Rollout Challenge",
+      "category": "Leadership & Strategy",
+      "price": "97",
+      "url": "",
+      "bullets": [
+        "Roll out AI safely, quickly",
+        "Set minimum viable operating model; governance; risk controls",
+        "Enablement paths; value tracker"
+      ],
+      "hub_category": "Enterprise & Corporate",
+      "guarantee": "No refunds; $97 credit policy"
+    },
+    {
+      "sku": "CH-OH-01",
+      "type": "challenge",
+      "name": "7-Day Operations & HR Automation Challenge",
+      "category": "Operations & HR",
+      "price": "97",
+      "url": "",
+      "bullets": [
+        "Standardize intake and automate",
+        "Stand up a centralized intake; ship two workflows",
+        "Add SLA/utilization tracker"
+      ],
+      "hub_category": "Department & Strategy Leaders",
+      "guarantee": "No refunds; $97 credit policy"
+    },
+    {
+      "sku": "CH-OH-02",
+      "type": "challenge",
+      "name": "7-Day AI Customer Support & Contact Center Challenge",
+      "category": "Operations & HR",
+      "price": "97",
+      "url": "",
+      "bullets": [
+        "Deflect repetitive tickets; boost CSAT",
+        "Build triage/routing; macro library; agent-assist prompts",
+        "CSAT/AHT snapshot"
+      ],
+      "hub_category": "Department & Strategy Leaders",
+      "guarantee": "No refunds; $97 credit policy"
+    },
+    {
+      "sku": "CH-PI-01",
+      "type": "challenge",
+      "name": "7-Day No-Code AI Business Stack Challenge",
+      "category": "Product & Innovation",
+      "price": "97",
+      "url": "",
+      "bullets": [
+        "Launch useful AI without code",
+        "Select a use case + stack; ship a v1 workflow/app",
+        "Security checklist and handoff plan"
+      ],
+      "hub_category": "Launch & GTM Leaders",
+      "guarantee": "No refunds; $97 credit policy"
+    },
+    {
+      "sku": "CH-PI-02",
+      "type": "challenge",
+      "name": "7-Day AI Product Launch Challenge",
+      "category": "Product & Innovation",
+      "price": "97",
+      "url": "",
+      "bullets": [
+        "Validate, position, and go-live",
+        "Angle hierarchy; asset pack; partner outreach",
+        "30-day KPI plan"
+      ],
+      "hub_category": "Launch & GTM Leaders",
+      "guarantee": "No refunds; $97 credit policy"
+    }
+  ]
+}
