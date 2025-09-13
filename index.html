@@ -118,7 +118,7 @@
 
       .btn.ghost {
         background: transparent;
-        color: var(--indigo-pulse);
+        color: #ffffff;
         border: 1px solid var(--indigo-pulse);
       }
       .btn.ghost:hover {
@@ -237,7 +237,7 @@
       }
       .options {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(1, minmax(0, 1fr));
         gap: 12px;
       }
 
@@ -275,7 +275,7 @@
       details.more {
         border: 1px dashed var(--silver-mist);
         border-radius: var(--radius-md);
-        background: #2a2f4f;
+        background: transparent;
         margin-top: 15px;
       }
       details.more summary {
@@ -283,7 +283,7 @@
         cursor: pointer;
         padding: 12px 14px;
         font-weight: 700;
-        color: var(--indigo-pulse);
+        color: #ffffff;
         display: flex;
         align-items: center;
         gap: 10px;
@@ -720,7 +720,6 @@
           <div class="result-grid">
             <!-- Recommended Card -->
             <article class="card">
-              <span class="badge"><i></i> Recommended</span>
               <h4>Toolkit: AI Content Toolkit</h4>
               <ul class="bullets">
                 <li>
@@ -786,5 +785,337 @@
         </div>
       </section>
     </div>
+    <script>
+      // Product recommendation logic
+      let catalog = null;
+
+      // Load catalog data
+      async function loadCatalog() {
+        try {
+          const response = await fetch("catalog.json");
+          catalog = await response.json();
+        } catch (error) {
+          console.error("Failed to load catalog:", error);
+        }
+      }
+
+      // Map goal to CH/TK pair with overrides
+      function mapGoalToProducts(answers) {
+        const { goal, role } = answers;
+
+        // Override: enterprise role forces enterprise pair
+        if (role === "enterprise") {
+          return { challenge: "CH-LS-04", toolkit: "TK-LS-04" };
+        }
+
+        // Override: Entrepreneurs & Founders + improve_ops prefers OH-02
+        if (role === "solo" && goal === "improve_ops") {
+          return { challenge: "CH-OH-02", toolkit: "TK-OH-02" };
+        }
+
+        // Override: Consultants & Agencies + ship_system allows AG-01 as alternates
+        if (role === "agency" && goal === "ship_system") {
+          return {
+            challenge: "CH-AG-01",
+            toolkit: "TK-AG-01",
+            alternates: { challenge: "CH-GR-01", toolkit: "TK-GR-01" },
+          };
+        }
+
+        // Default goal mappings
+        const goalMap = {
+          ship_system: { challenge: "CH-GR-01", toolkit: "TK-GR-01" },
+          validate_offer: { challenge: "CH-PI-02", toolkit: "TK-PI-02" },
+          improve_ops: { challenge: "CH-OH-01", toolkit: "TK-OH-01" },
+          content_engine: { challenge: "CH-GR-03", toolkit: "TK-GR-03" },
+        };
+
+        return goalMap[goal] || { challenge: "CH-GR-01", toolkit: "TK-GR-01" };
+      }
+
+      // Choose primary path type based on budget/time priority
+      function choosePrimaryPath(answers, productPair) {
+        const { budget, time } = answers;
+
+        // Priority 1: Budget answered
+        if (budget) {
+          switch (budget) {
+            case "97":
+              return {
+                primary: "challenge",
+                altA: "toolkit",
+                altB: "book",
+                primarySku: productPair.challenge,
+                altASku: productPair.toolkit,
+                altBSku: "BOOK-MANIFESTO",
+              };
+            case "497_2997":
+              return {
+                primary: "toolkit",
+                altA: "challenge",
+                altB: "book",
+                primarySku: productPair.toolkit,
+                altASku: productPair.challenge,
+                altBSku: "BOOK-MANIFESTO",
+              };
+            case "custom":
+              return {
+                primary: "toolkit",
+                altA: "challenge",
+                altB: "book",
+                primarySku: "TK-LS-04",
+                altASku: "CH-LS-04",
+                altBSku: "BOOK-MANIFESTO",
+              };
+          }
+        }
+
+        // Priority 2: Time answered
+        if (time) {
+          switch (time) {
+            case "today":
+              return {
+                primary: "book",
+                altA: "challenge",
+                altB: "toolkit",
+                primarySku: "BOOK-MANIFESTO",
+                altASku: productPair.challenge,
+                altBSku: productPair.toolkit,
+              };
+            case "7d":
+              return {
+                primary: "challenge",
+                altA: "toolkit",
+                altB: "book",
+                primarySku: productPair.challenge,
+                altASku: productPair.toolkit,
+                altBSku: "BOOK-MANIFESTO",
+              };
+            case "30d":
+              return {
+                primary: "toolkit",
+                altA: "challenge",
+                altB: "book",
+                primarySku: productPair.toolkit,
+                altASku: productPair.challenge,
+                altBSku: "BOOK-MANIFESTO",
+              };
+          }
+        }
+
+        // Default: challenge primary
+        return {
+          primary: "challenge",
+          altA: "toolkit",
+          altB: "book",
+          primarySku: productPair.challenge,
+          altASku: productPair.toolkit,
+          altBSku: "BOOK-MANIFESTO",
+        };
+      }
+
+      // Find product by SKU
+      function findProductBySku(sku) {
+        if (!catalog) return null;
+        return catalog.products.find((product) => product.sku === sku);
+      }
+
+      // Generate recommendation
+      function generateRecommendation(answers) {
+        if (!catalog) return null;
+
+        // Step A: Map goal to products
+        const productPair = mapGoalToProducts(answers);
+
+        // Step B: Choose primary path
+        const pathConfig = choosePrimaryPath(answers, productPair);
+
+        // Step C: Get actual product objects
+        const primaryProduct = findProductBySku(pathConfig.primarySku);
+        const altAProduct = findProductBySku(pathConfig.altASku);
+        const altBProduct = findProductBySku(pathConfig.altBSku);
+
+        return {
+          primary: primaryProduct,
+          altA: altAProduct,
+          altB: altBProduct,
+          pathConfig,
+        };
+      }
+
+      // Collect form answers
+      function collectAnswers() {
+        const answers = {
+          goal: "",
+          time: "",
+          budget: "",
+          role: "",
+          experience: "",
+          tooling: "",
+        };
+
+        // Collect goal
+        const goalInput = document.querySelector('input[name="goal"]:checked');
+        if (goalInput) {
+          const goalMap = {
+            "goal-ship": "ship_system",
+            "goal-validate": "validate_offer",
+            "goal-ops": "improve_ops",
+            "goal-content": "content_engine",
+          };
+          answers.goal = goalMap[goalInput.id] || "";
+        }
+
+        // Collect time
+        const timeInput = document.querySelector('input[name="time"]:checked');
+        if (timeInput) {
+          const timeMap = {
+            "time-today": "today",
+            "time-7": "7d",
+            "time-30": "30d",
+          };
+          answers.time = timeMap[timeInput.id] || "";
+        }
+
+        // Collect budget
+        const budgetInput = document.querySelector(
+          'input[name="budget"]:checked'
+        );
+        if (budgetInput) {
+          const budgetMap = {
+            "budget-97": "97",
+            "budget-mid": "497_2997",
+            "budget-custom": "custom",
+          };
+          answers.budget = budgetMap[budgetInput.id] || "";
+        }
+
+        // Collect role
+        const roleInput = document.querySelector('input[name="role"]:checked');
+        if (roleInput) {
+          const roleMap = {
+            "role-solo": "solo",
+            "role-agency": "agency",
+            "role-lead": "lead",
+            "role-enterprise": "enterprise",
+          };
+          answers.role = roleMap[roleInput.id] || "";
+        }
+
+        // Collect experience
+        const xpInput = document.querySelector('input[name="xp"]:checked');
+        if (xpInput) {
+          const xpMap = {
+            "xp-new": "new",
+            "xp-int": "intermediate",
+            "xp-adv": "advanced",
+          };
+          answers.experience = xpMap[xpInput.id] || "";
+        }
+
+        // Collect tooling
+        const toolInput = document.querySelector('input[name="tool"]:checked');
+        if (toolInput) {
+          const toolMap = {
+            "tool-ghl": "ghl",
+            "tool-notion": "notion",
+            "tool-hubspot": "hubspot",
+            "tool-other": "other",
+          };
+          answers.tooling = toolMap[toolInput.id] || "";
+        }
+
+        return answers;
+      }
+
+      // Update result display
+      function updateResultDisplay(recommendation) {
+        if (!recommendation) return;
+
+        const { primary, altA, altB, pathConfig } = recommendation;
+
+        // Update primary recommendation
+        if (primary) {
+          const primaryCard = document.querySelector(".card");
+          if (primaryCard) {
+            primaryCard.querySelector("h4").textContent = `${
+              primary.type === "challenge"
+                ? "Challenge"
+                : primary.type === "toolkit"
+                ? "Toolkit"
+                : "Book"
+            }: ${primary.name}`;
+
+            // Update bullets
+            const bulletsList = primaryCard.querySelector(".bullets");
+            if (bulletsList) {
+              bulletsList.innerHTML = primary.bullets
+                .map((bullet) => `<li>${bullet}</li>`)
+                .join("");
+            }
+
+            // Update meta info
+            const metaSpans = primaryCard.querySelectorAll(".meta span");
+            if (metaSpans.length >= 2) {
+              metaSpans[0].innerHTML = `<em>Time & effort:</em> ~6–8 hours • Templates included`;
+              metaSpans[1].innerHTML = `<em>Price:</em> $${primary.price} <span class="tiny">(challenge credit applies)</span>`;
+            }
+          }
+        }
+
+        // Update alternatives
+        if (altA) {
+          const altAElement = document.querySelector(
+            ".alt-tile:first-child h5"
+          );
+          if (altAElement) {
+            altAElement.textContent = `Alternate A — ${altA.name}`;
+          }
+        }
+
+        if (altB) {
+          const altBElement = document.querySelector(".alt-tile:last-child h5");
+          if (altBElement) {
+            altBElement.textContent = `Alternate B — ${altB.name}`;
+          }
+        }
+      }
+
+      // Handle form submission
+      function handleFormSubmission() {
+        const answers = collectAnswers();
+        const recommendation = generateRecommendation(answers);
+        updateResultDisplay(recommendation);
+      }
+
+      // Initialize
+      document.addEventListener("DOMContentLoaded", async function () {
+        await loadCatalog();
+
+        // Add event listeners to form inputs
+        const formInputs = document.querySelectorAll('input[type="radio"]');
+        formInputs.forEach((input) => {
+          input.addEventListener("change", function () {
+            // Check if we're on the result step
+            const resultStep = document.querySelector("#result:checked");
+            if (resultStep) {
+              handleFormSubmission();
+            }
+          });
+        });
+
+        // Add event listener to continue buttons that go to result
+        const continueButtons = document.querySelectorAll(
+          'label[for="result"]'
+        );
+        continueButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            setTimeout(() => {
+              handleFormSubmission();
+            }, 100);
+          });
+        });
+      });
+    </script>
   </body>
 </html>
