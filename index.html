@@ -799,17 +799,17 @@
       function mapGoalToProducts(answers) {
         const { goal, role } = answers;
 
-        // Override: enterprise role forces enterprise pair
+        // Override: Enterprise & Corporate (any goal) → use enterprise set
         if (role === "enterprise") {
           return { challenge: "CH-LS-04", toolkit: "TK-LS-04" };
         }
 
-        // Override: Entrepreneurs & Founders + improve_ops prefers OH-02
+        // Override: Entrepreneurs & Founders + Improve ops → use Support & Contact Center
         if (role === "solo" && goal === "improve_ops") {
           return { challenge: "CH-OH-02", toolkit: "TK-OH-02" };
         }
 
-        // Override: Consultants & Agencies + ship_system allows AG-01 as alternates
+        // Override: Consultants & Agencies + Ship a system → allow Agency as alternates
         if (role === "agency" && goal === "ship_system") {
           return {
             challenge: "CH-AG-01",
@@ -829,77 +829,71 @@
         return goalMap[goal] || { challenge: "CH-GR-01", toolkit: "TK-GR-01" };
       }
 
-      // Choose primary path type based on budget/time priority
+      // Choose primary path type based on new business logic
       function choosePrimaryPath(answers, productPair) {
-        const { budget, time } = answers;
+        const { goal, time, budget, role, experience } = answers;
 
-        // Priority 1: Budget answered
-        if (budget) {
-          switch (budget) {
-            case "97":
-              return {
-                primary: "challenge",
-                altA: "toolkit",
-                altB: "book",
-                primarySku: productPair.challenge,
-                altASku: productPair.toolkit,
-                altBSku: "BOOK-MANIFESTO",
-              };
-            case "497_2997":
-              return {
-                primary: "toolkit",
-                altA: "challenge",
-                altB: "book",
-                primarySku: productPair.toolkit,
-                altASku: productPair.challenge,
-                altBSku: "BOOK-MANIFESTO",
-              };
-            case "custom":
-              return {
-                primary: "toolkit",
-                altA: "challenge",
-                altB: "book",
-                primarySku: "TK-LS-04",
-                altASku: "CH-LS-04",
-                altBSku: "BOOK-MANIFESTO",
-              };
-          }
+        // Rule 1: Time ≤ 7d & Goal ≠ learn → route = Challenge
+        if (time === "7d" && goal !== "learn") {
+          return {
+            primary: "challenge",
+            altA: "toolkit",
+            altB: "book",
+            primarySku: productPair.challenge,
+            altASku: productPair.toolkit,
+            altBSku: "BOOK-MANIFESTO",
+          };
         }
 
-        // Priority 2: Time answered
-        if (time) {
-          switch (time) {
-            case "today":
-              return {
-                primary: "book",
-                altA: "challenge",
-                altB: "toolkit",
-                primarySku: "BOOK-MANIFESTO",
-                altASku: productPair.challenge,
-                altBSku: productPair.toolkit,
-              };
-            case "7d":
-              return {
-                primary: "challenge",
-                altA: "toolkit",
-                altB: "book",
-                primarySku: productPair.challenge,
-                altASku: productPair.toolkit,
-                altBSku: "BOOK-MANIFESTO",
-              };
-            case "30d":
-              return {
-                primary: "toolkit",
-                altA: "challenge",
-                altB: "book",
-                primarySku: productPair.toolkit,
-                altASku: productPair.challenge,
-                altBSku: "BOOK-MANIFESTO",
-              };
-          }
+        // Rule 2: Goal = ship_system | improve_ops | content_engine → route = Toolkit
+        if (["ship_system", "improve_ops", "content_engine"].includes(goal)) {
+          return {
+            primary: "toolkit",
+            altA: "challenge",
+            altB: "book",
+            primarySku: productPair.toolkit,
+            altASku: productPair.challenge,
+            altBSku: "BOOK-MANIFESTO",
+          };
         }
 
-        // Default: challenge primary
+        // Rule 3: Goal = validate_offer or learn-first → route = Book
+        if (goal === "validate_offer" || goal === "learn") {
+          return {
+            primary: "book",
+            altA: "challenge",
+            altB: "toolkit",
+            primarySku: "BOOK-MANIFESTO",
+            altASku: productPair.challenge,
+            altBSku: productPair.toolkit,
+          };
+        }
+
+        // Rule 4: Budget = 97 & Experience = new → prefer Challenge (with $97 credit note)
+        if (budget === "97" && experience === "new") {
+          return {
+            primary: "challenge",
+            altA: "toolkit",
+            altB: "book",
+            primarySku: productPair.challenge,
+            altASku: productPair.toolkit,
+            altBSku: "BOOK-MANIFESTO",
+          };
+        }
+
+        // Rule 5: Role = enterprise | agency → prefer Toolkit + show consult CTA
+        if (["enterprise", "agency"].includes(role)) {
+          return {
+            primary: "toolkit",
+            altA: "challenge",
+            altB: "book",
+            primarySku: productPair.toolkit,
+            altASku: productPair.challenge,
+            altBSku: "BOOK-MANIFESTO",
+          };
+        }
+
+        // Rule 6: Fallback → Challenge
         return {
           primary: "challenge",
           altA: "toolkit",
@@ -1025,7 +1019,7 @@
       }
 
       // Update result display
-      function updateResultDisplay(recommendation) {
+      function updateResultDisplay(recommendation, answers) {
         if (!recommendation) return;
 
         const { primary, altA, altB, pathConfig } = recommendation;
@@ -1050,11 +1044,17 @@
                 .join("");
             }
 
-            // Update meta info
+            // Update meta info with $97 credit note when applicable
             const metaSpans = primaryCard.querySelectorAll(".meta span");
             if (metaSpans.length >= 2) {
               metaSpans[0].innerHTML = `<em>Time & effort:</em> ~6–8 hours • Templates included`;
-              metaSpans[1].innerHTML = `<em>Price:</em> $${primary.price} <span class="tiny">(challenge credit applies)</span>`;
+              
+              // Show $97 credit note for new users with $97 budget
+              const creditNote = (answers.budget === "97" && answers.experience === "new") 
+                ? " <span class=\"tiny\">($97 credit applies)</span>"
+                : " <span class=\"tiny\">(challenge credit applies)</span>";
+              
+              metaSpans[1].innerHTML = `<em>Price:</em> $${primary.price}${creditNote}`;
             }
           }
         }
@@ -1081,7 +1081,7 @@
       function handleFormSubmission() {
         const answers = collectAnswers();
         const recommendation = generateRecommendation(answers);
-        updateResultDisplay(recommendation);
+        updateResultDisplay(recommendation, answers);
       }
 
       // Initialize
