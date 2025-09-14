@@ -1048,12 +1048,13 @@
             const metaSpans = primaryCard.querySelectorAll(".meta span");
             if (metaSpans.length >= 2) {
               metaSpans[0].innerHTML = `<em>Time & effort:</em> ~6–8 hours • Templates included`;
-              
+
               // Show $97 credit note for new users with $97 budget
-              const creditNote = (answers.budget === "97" && answers.experience === "new") 
-                ? " <span class=\"tiny\">($97 credit applies)</span>"
-                : " <span class=\"tiny\">(challenge credit applies)</span>";
-              
+              const creditNote =
+                answers.budget === "97" && answers.experience === "new"
+                  ? ' <span class="tiny">($97 credit applies)</span>'
+                  : ' <span class="tiny">(challenge credit applies)</span>';
+
               metaSpans[1].innerHTML = `<em>Price:</em> $${primary.price}${creditNote}`;
             }
           }
