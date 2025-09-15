@@ -737,8 +737,12 @@
                 >
               </div>
               <div class="actions">
-                <a href="#" class="btn primary">Get the Toolkit</a>
-                <a href="#" class="btn ghost">See what’s inside</a>
+                <a href="#" class="btn primary" id="primary-cta"
+                  >Get the Toolkit</a
+                >
+                <a href="#" class="btn ghost" id="primary-details"
+                  >See what's inside</a
+                >
               </div>
               <p class="footer-note">
                 Did the picker get it wrong? See alternatives below.
@@ -755,7 +759,9 @@
                     sprint.
                   </p>
                   <div class="actions">
-                    <a href="#" class="btn ghost">View Details</a>
+                    <a href="#" class="btn ghost" id="alt-a-cta"
+                      >View Details</a
+                    >
                   </div>
                 </div>
                 <div class="alt-tile">
@@ -765,7 +771,9 @@
                     approach.
                   </p>
                   <div class="actions">
-                    <a href="#" class="btn ghost">View Details</a>
+                    <a href="#" class="btn ghost" id="alt-b-cta"
+                      >View Details</a
+                    >
                   </div>
                 </div>
               </div>
@@ -1068,12 +1076,44 @@
           if (altAElement) {
             altAElement.textContent = `Alternate A — ${altA.name}`;
           }
+
+          // Update Alt A button URL
+          const altACta = document.getElementById("alt-a-cta");
+          if (altACta && altA.url) {
+            altACta.href = altA.url;
+          }
         }
 
         if (altB) {
           const altBElement = document.querySelector(".alt-tile:last-child h5");
           if (altBElement) {
             altBElement.textContent = `Alternate B — ${altB.name}`;
+          }
+
+          // Update Alt B button URL
+          const altBCta = document.getElementById("alt-b-cta");
+          if (altBCta && altB.url) {
+            altBCta.href = altB.url;
+          }
+        }
+
+        // Update primary buttons
+        const primaryCta = document.getElementById("primary-cta");
+        const primaryDetails = document.getElementById("primary-details");
+
+        if (primary && primary.url) {
+          if (primaryCta) {
+            primaryCta.href = primary.url;
+            primaryCta.textContent =
+              primary.type === "challenge"
+                ? "Start Challenge"
+                : primary.type === "toolkit"
+                ? "Get the Toolkit"
+                : "Get the Book";
+          }
+          if (primaryDetails) {
+            primaryDetails.href = primary.url;
+            primaryDetails.textContent = "See what's inside";
           }
         }
       }
